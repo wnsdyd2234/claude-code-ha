@@ -59,7 +59,7 @@ RUN ADDON_ARCH="${BUILD_ARCH}"; \
     echo "Resolved add-on architecture: ${ADDON_ARCH} (BUILD_ARCH='${BUILD_ARCH}' TARGETARCH='${TARGETARCH}/${TARGETVARIANT}' uname='$(uname -m)')"
 
 # Install Claude Code CLI via npm (avoids install.sh hang in Docker build environments)
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code@2.0.30
 
 # Install Home Assistant CLI (ha command)
 # 64-bit targets track latest; 4.46.0 is the last release that still ships the
