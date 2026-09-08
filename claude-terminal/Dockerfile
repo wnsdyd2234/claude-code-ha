@@ -58,18 +58,8 @@ RUN ADDON_ARCH="${BUILD_ARCH}"; \
     printf '%s\n' "${ADDON_ARCH}" > /etc/addon-arch && \
     echo "Resolved add-on architecture: ${ADDON_ARCH} (BUILD_ARCH='${BUILD_ARCH}' TARGETARCH='${TARGETARCH}/${TARGETVARIANT}' uname='$(uname -m)')"
 
-# Install Claude Code CLI. Current native releases do not publish a 32-bit ARM
-# binary, so armv7/armhf use the final portable 1.x JavaScript release. Supported
-# 64-bit targets keep the native-latest path with the existing npm fallback.
-RUN ADDON_ARCH=$(cat /etc/addon-arch); \
-    if [ "${ADDON_ARCH}" = "armv7" ] || [ "${ADDON_ARCH}" = "armhf" ]; then \
-        echo "32-bit ARM (${ADDON_ARCH}): installing portable Claude Code 1.0.128"; \
-        npm install -g @anthropic-ai/claude-code@1.0.128; \
-    else \
-        (curl -fsSL https://claude.ai/install.sh | bash \
-        && ln -sf /root/.local/bin/claude /usr/local/bin/claude) \
-        || npm install -g @anthropic-ai/claude-code; \
-    fi
+# Install Claude Code CLI via npm (avoids install.sh hang in Docker build environments)
+RUN npm install -g @anthropic-ai/claude-code
 
 # Install Home Assistant CLI (ha command)
 # 64-bit targets track latest; 4.46.0 is the last release that still ships the
